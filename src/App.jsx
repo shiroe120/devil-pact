@@ -230,10 +230,16 @@ function App() {
 
       <div className="content">
         <header className={`title-area ${titleVisible ? 'visible' : ''}`}>
+          <div className="title-decoration-top">✦ ━━━━━━━ ✦</div>
           <h1 className="main-title">
-            <span className="title-gothic">DEVIL'S PACT</span>
+            <span className="title-gothic">Devil's Pact</span>
           </h1>
           <h2 className="sub-title">魔鬼契约</h2>
+          <div className="title-divider">
+            <span className="divider-line" />
+            <span className="divider-icon">⛧</span>
+            <span className="divider-line" />
+          </div>
           <p className="tagline">"Omne initium veneficium est" — 万始皆巫</p>
         </header>
 

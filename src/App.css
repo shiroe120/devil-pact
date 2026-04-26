@@ -77,15 +77,17 @@
 }
 
 .title-gothic {
-  font-family: 'UnifrakturMaguntia', cursive;
-  font-size: clamp(48px, 8vw, 80px);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(42px, 7vw, 72px);
+  font-weight: 900;
   color: var(--blood);
   text-shadow:
     0 0 20px var(--blood-glow),
     0 0 40px rgba(180, 40, 40, 0.3),
     0 0 80px rgba(180, 40, 40, 0.15),
     2px 2px 4px rgba(0, 0, 0, 0.8);
-  letter-spacing: 4px;
+  letter-spacing: 8px;
+  text-transform: uppercase;
   animation: titlePulse 4s ease-in-out infinite;
 }
 
@@ -109,10 +111,11 @@
 .sub-title {
   font-family: 'Noto Serif SC', serif;
   font-size: clamp(20px, 4vw, 28px);
+  font-weight: 700;
   color: var(--gold);
   text-shadow: 0 0 15px rgba(201, 168, 76, 0.3);
-  letter-spacing: 12px;
-  margin-bottom: 12px;
+  letter-spacing: 16px;
+  margin-bottom: 16px;
 }
 
 .tagline {
