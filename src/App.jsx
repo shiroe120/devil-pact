@@ -393,11 +393,11 @@ function BackgroundCircle({ summoning = false }) {
       )}
       <svg viewBox="0 0 600 600" className="magic-circle-svg">
         <defs>
-          <linearGradient id="mc-ring" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="rgba(240,200,120,0.85)" />
-            <stop offset="50%" stopColor="rgba(220,70,55,0.9)" />
-            <stop offset="100%" stopColor="rgba(230,190,100,0.8)" />
-          </linearGradient>
+          <radialGradient id="mc-ring" cx="300" cy="300" r="300" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="rgba(245,210,130,0.92)" />
+            <stop offset="52%" stopColor="rgba(225,75,58,0.94)" />
+            <stop offset="100%" stopColor="rgba(235,195,105,0.88)" />
+          </radialGradient>
           <filter id="mc-glow" x="-40%" y="-40%" width="180%" height="180%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="blur" />
             <feColorMatrix
@@ -412,25 +412,27 @@ function BackgroundCircle({ summoning = false }) {
             </feMerge>
           </filter>
         </defs>
-        <g filter="url(#mc-glow)" className="magic-circle-draw">
-          <circle cx="300" cy="300" r="278" fill="none" stroke="url(#mc-ring)" strokeWidth="1.6" />
-          <circle cx="300" cy="300" r="248" fill="none" stroke="rgba(255,200,160,0.55)" strokeWidth="1.1" strokeDasharray="10,14" />
-          <circle cx="300" cy="300" r="218" fill="none" stroke="rgba(201,168,76,0.5)" strokeWidth="1" />
-          <polygon
-            points="300,80 450,200 450,400 300,520 150,400 150,200"
-            fill="none"
-            stroke="rgba(255,120,100,0.45)"
-            strokeWidth="1.2"
-          />
-          <polygon
-            points="300,100 440,210 440,390 300,500 160,390 160,210"
-            fill="none"
-            stroke="rgba(220,190,120,0.4)"
-            strokeWidth="1"
-            transform="rotate(30, 300, 300)"
-          />
-          <text x="300" y="308" textAnchor="middle" dominantBaseline="central"
-            fill="rgba(255,140,120,0.35)" fontSize="72" fontFamily="serif">⛧</text>
+        <g className="magic-circle-spin">
+          <g filter="url(#mc-glow)" className="magic-circle-draw">
+            <circle cx="300" cy="300" r="278" fill="none" stroke="url(#mc-ring)" strokeWidth="1.6" />
+            <circle cx="300" cy="300" r="248" fill="none" stroke="rgba(255,200,160,0.55)" strokeWidth="1.1" strokeDasharray="12,12" />
+            <circle cx="300" cy="300" r="218" fill="none" stroke="rgba(201,168,76,0.5)" strokeWidth="1" />
+            <polygon
+              points="300,80 450,200 450,400 300,520 150,400 150,200"
+              fill="none"
+              stroke="rgba(255,120,100,0.45)"
+              strokeWidth="1.2"
+            />
+            <polygon
+              points="300,100 440,210 440,390 300,500 160,390 160,210"
+              fill="none"
+              stroke="rgba(220,190,120,0.4)"
+              strokeWidth="1"
+              transform="rotate(30, 300, 300)"
+            />
+            <text x="300" y="300" textAnchor="middle" dominantBaseline="central"
+              fill="rgba(255,140,120,0.35)" fontSize="72" fontFamily="serif">⛧</text>
+          </g>
         </g>
       </svg>
     </div>
@@ -473,7 +475,7 @@ function PentagramSpinner() {
         <circle cx="100" cy="100" r="50" fill="none" stroke="rgba(180,40,40,0.4)" strokeWidth="1" strokeDasharray="5,5" />
       </svg>
       <div className="pentagram-glow" />
-      <p className="summoning-text">正在缔结契约...</p>
+      <p className="summoning-text">FORGING PACT...</p>
     </div>
   )
 }
@@ -655,12 +657,12 @@ function App() {
               <div className="ornament bottom-ornament">⚜ ⚜ ⚜</div>
             </div>
             <button
-              className={`seal-button ${wish.trim() ? 'active' : ''}`}
+              className={`seal-button seal-button--pact ${wish.trim() ? 'active' : ''}`}
               onClick={handleSubmit}
               disabled={!wish.trim()}
             >
               <span className="seal-icon">⛧</span>
-              <span className="seal-text">签订契约</span>
+              <span className="seal-text">Sign in blood</span>
             </button>
             <p className="warning-text">⚠ 每个愿望皆有代价，魔鬼从不出售廉价之物</p>
           </div>
@@ -675,7 +677,7 @@ function App() {
             </div>
             <button className="seal-button reset-button" onClick={handleReset}>
               <span className="seal-icon">🕯</span>
-              <span className="seal-text">再次许愿</span>
+              <span className="seal-text">Wish again</span>
             </button>
           </div>
         )}
