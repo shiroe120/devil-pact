@@ -661,3 +661,212 @@
   70% { filter: url(#torn-edge) brightness(1.04); }
   85% { filter: url(#torn-edge) brightness(0.96); }
 }
+
+/* ============ Rune dust (drifting ash) ============ */
+.rune-dust {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.rune-dust-bit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: -0.5em;
+  color: rgba(230, 170, 150, 0.92);
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 500;
+  text-shadow:
+    0 0 14px rgba(255, 200, 140, 0.55),
+    0 0 28px rgba(200, 70, 55, 0.4),
+    0 0 3px rgba(60, 20, 18, 0.65);
+  filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.35));
+  animation: runeDustDrift linear infinite;
+  user-select: none;
+  will-change: transform, opacity;
+}
+
+@keyframes runeDustDrift {
+  0% {
+    transform: translate3d(var(--dx0), -6vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--dust-o);
+  }
+  48% {
+    transform: translate3d(var(--dx1), 48vh, 0) rotate(0deg);
+    opacity: calc(var(--dust-o) * 0.55);
+  }
+  78% {
+    opacity: calc(var(--dust-o) * 0.28);
+  }
+  100% {
+    transform: translate3d(var(--dx2), 112vh, 0) rotate(var(--spin));
+    opacity: 0;
+  }
+}
+
+/* ============ Blood trickle (canvas) ============ */
+.blood-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0.92;
+}
+
+/* ============ Background Magic Circle ============ */
+.magic-circle-bg {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(96vw, 96vh);
+  height: min(96vw, 96vh);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.magic-circle-aura {
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 190, 150, 0.32) 0%, rgba(210, 70, 55, 0.18) 32%, transparent 62%),
+    radial-gradient(circle at 50% 50%, rgba(201, 168, 76, 0.14) 0%, transparent 55%);
+  animation: magicAuraPulse 4.2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(14px);
+}
+
+@keyframes magicAuraPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.94);
+  }
+  28% {
+    opacity: 0.95;
+    transform: scale(1.03);
+  }
+  50% {
+    opacity: 0.42;
+    transform: scale(0.98);
+  }
+  72% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  88% {
+    opacity: 0.58;
+    transform: scale(1);
+  }
+}
+
+.magic-circle-svg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  animation:
+    circleRotate 140s linear infinite,
+    magicCircleBreath 4s ease-in-out infinite;
+}
+
+@keyframes magicCircleBreath {
+  0%, 100% {
+    opacity: 0.55;
+    filter:
+      drop-shadow(0 0 16px rgba(220, 80, 60, 0.38))
+      drop-shadow(0 0 40px rgba(201, 168, 76, 0.22))
+      drop-shadow(0 0 72px rgba(180, 40, 40, 0.12));
+  }
+  24% {
+    opacity: 0.88;
+    filter:
+      drop-shadow(0 0 26px rgba(255, 110, 85, 0.62))
+      drop-shadow(0 0 56px rgba(240, 200, 130, 0.42))
+      drop-shadow(0 0 96px rgba(200, 50, 45, 0.22));
+  }
+  48% {
+    opacity: 0.48;
+    filter:
+      drop-shadow(0 0 12px rgba(170, 55, 45, 0.28))
+      drop-shadow(0 0 32px rgba(201, 168, 76, 0.14));
+  }
+  70% {
+    opacity: 0.98;
+    filter:
+      drop-shadow(0 0 30px rgba(255, 130, 100, 0.68))
+      drop-shadow(0 0 64px rgba(255, 220, 170, 0.38))
+      drop-shadow(0 0 100px rgba(160, 35, 35, 0.2));
+  }
+  86% {
+    opacity: 0.6;
+    filter:
+      drop-shadow(0 0 18px rgba(200, 70, 55, 0.4))
+      drop-shadow(0 0 44px rgba(201, 168, 76, 0.2));
+  }
+}
+
+@keyframes circleRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ============ Soul Orbs ============ */
+.soul-orbs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.soul-orb {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%,
+    rgba(100, 200, 255, 0.25) 0%,
+    rgba(60, 140, 200, 0.12) 30%,
+    rgba(40, 80, 140, 0.06) 60%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 15px rgba(80, 160, 220, 0.15),
+    0 0 30px rgba(60, 120, 180, 0.08),
+    inset 0 0 8px rgba(150, 220, 255, 0.2);
+  animation: soulOrbDrift ease-in-out infinite;
+}
+
+@keyframes soulOrbDrift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate(20px, -30px) scale(1.1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-10px, -60px) scale(0.9);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translate(15px, -20px) scale(1.05);
+    opacity: 0.5;
+  }
+}
