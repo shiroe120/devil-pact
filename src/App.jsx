@@ -228,7 +228,7 @@ function App() {
         <defs>
           <filter id="torn-edge">
             <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" seed="2" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
           </filter>
           <filter id="parchment-texture">
             <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" seed="15" result="noise" />
