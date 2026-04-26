@@ -28,18 +28,18 @@ function flameRgb(life) {
   const t = Math.max(0, Math.min(1, life))
   if (t > 0.72) {
     const k = (t - 0.72) / 0.28
-    return [255, Math.floor(230 - k * 30), Math.floor(180 - k * 80)]
+    return [Math.floor(198 - k * 22), Math.floor(130 - k * 28), Math.floor(62 - k * 28)]
   }
   if (t > 0.42) {
     const k = (t - 0.42) / 0.3
-    return [255, Math.floor(140 + 90 * k), Math.floor(40 + 30 * k)]
+    return [Math.floor(175 + 28 * k), Math.floor(78 + 52 * k), Math.floor(28 + 22 * k)]
   }
   if (t > 0.18) {
     const k = (t - 0.18) / 0.24
-    return [Math.floor(220 - 80 * k), Math.floor(55 - 25 * k), Math.floor(18 - 5 * k)]
+    return [Math.floor(145 - 42 * k), Math.floor(42 - 14 * k), Math.floor(16 - 5 * k)]
   }
   const k = t / 0.18
-  return [Math.floor(90 + 50 * k), Math.floor(22 + 18 * k), Math.floor(10 + 8 * k)]
+  return [Math.floor(62 + 42 * k), Math.floor(16 + 12 * k), Math.floor(8 + 6 * k)]
 }
 
 function GhostFireCursor() {
@@ -64,16 +64,16 @@ function GhostFireCursor() {
     const handleMouseMove = (e) => {
       mouseX = e.clientX
       mouseY = e.clientY
-      const count = 5 + Math.floor(Math.random() * 4)
+      const count = 3 + Math.floor(Math.random() * 3)
       for (let i = 0; i < count; i++) {
         const a = Math.random() * Math.PI * 2
-        const r = Math.random() * 14
+        const r = Math.random() * 12
         trails.push({
           x: mouseX + Math.cos(a) * r * 0.45,
           y: mouseY + Math.sin(a) * r * 0.35 + 6,
           vx: (Math.random() - 0.5) * 1.4,
           vy: -(Math.random() * 2.8 + 2.0),
-          size: Math.random() * 10 + 7,
+          size: Math.random() * 7 + 5,
           life: 1,
           decay: 0.016 + Math.random() * 0.014,
           wobble: Math.random() * Math.PI * 2,
@@ -99,24 +99,24 @@ function GhostFireCursor() {
         t.size *= 0.988
 
         const [r, g, b] = flameRgb(t.life)
-        const a = Math.min(1, t.life * 1.15)
+        const a = Math.min(0.72, t.life * 0.72)
 
-        ctx.globalAlpha = a * 0.22
-        ctx.fillStyle = `rgb(${Math.floor(r * 0.45)}, ${Math.floor(g * 0.35)}, ${Math.floor(b * 0.25)})`
+        ctx.globalAlpha = a * 0.09
+        ctx.fillStyle = `rgb(${Math.floor(r * 0.5)}, ${Math.floor(g * 0.4)}, ${Math.floor(b * 0.3)})`
         ctx.beginPath()
-        ctx.arc(t.x, t.y, t.size * 2.1, 0, Math.PI * 2)
+        ctx.arc(t.x, t.y, t.size * 1.75, 0, Math.PI * 2)
         ctx.fill()
 
-        ctx.globalAlpha = a * 0.45
-        ctx.fillStyle = `rgb(${r}, ${Math.floor(g * 0.85)}, ${Math.floor(b * 0.5)})`
+        ctx.globalAlpha = a * 0.2
+        ctx.fillStyle = `rgb(${r}, ${Math.floor(g * 0.88)}, ${Math.floor(b * 0.55)})`
         ctx.beginPath()
-        ctx.arc(t.x, t.y, t.size * 1.05, 0, Math.PI * 2)
+        ctx.arc(t.x, t.y, t.size * 0.95, 0, Math.PI * 2)
         ctx.fill()
 
-        ctx.globalAlpha = a * 0.85
-        ctx.fillStyle = `rgb(${Math.min(255, r + 20)}, ${Math.min(255, g + 40)}, ${Math.min(255, b + 60)})`
+        ctx.globalAlpha = a * 0.32
+        ctx.fillStyle = `rgb(${Math.floor(r * 1.06)}, ${Math.floor(g * 1.04)}, ${Math.floor(b * 1.02)})`
         ctx.beginPath()
-        ctx.arc(t.x, t.y, t.size * 0.42, 0, Math.PI * 2)
+        ctx.arc(t.x, t.y, t.size * 0.38, 0, Math.PI * 2)
         ctx.fill()
       })
       ctx.globalCompositeOperation = 'source-over'
@@ -380,10 +380,17 @@ function BloodTrickleCanvas() {
   return <canvas ref={canvasRef} className="blood-canvas" />
 }
 
-function BackgroundCircle() {
+function BackgroundCircle({ summoning = false }) {
   return (
-    <div className="magic-circle-bg" aria-hidden>
+    <div className={`magic-circle-bg${summoning ? ' magic-circle-bg--summoning' : ''}`} aria-hidden>
       <div className="magic-circle-aura" />
+      {summoning && (
+        <div className="magic-circle-pulse-rings">
+          <span />
+          <span />
+          <span />
+        </div>
+      )}
       <svg viewBox="0 0 600 600" className="magic-circle-svg">
         <defs>
           <linearGradient id="mc-ring" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -606,7 +613,7 @@ function App() {
 
       <ParticleCanvas />
       <GhostFireCursor />
-      <BackgroundCircle />
+      <BackgroundCircle summoning={phase === 'summoning'} />
       <RuneDust />
       <BloodTrickleCanvas />
       <SoulOrbs />
@@ -623,7 +630,7 @@ function App() {
           <h1 className="main-title">
             <span className="title-gothic">Devil's Pact</span>
           </h1>
-          <h2 className="sub-title">魔鬼契约</h2>
+
           <div className="title-divider">
             <span className="divider-line" />
             <span className="divider-icon">⛧</span>
