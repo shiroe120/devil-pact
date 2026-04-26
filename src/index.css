@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=UnifrakturMaguntia&family=Noto+Serif+SC:wght@400;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blood: #b42828;
+  --blood-dark: #6b0f0f;
+  --blood-glow: rgba(180, 40, 40, 0.6);
+  --parchment: #2a1f14;
+  --parchment-light: #3a2d1e;
+  --gold: #c9a84c;
+  --fog: rgba(80, 20, 20, 0.15);
+  --text: #d4c4a0;
+  --text-dim: #8a7a5a;
+}
+
+body {
+  background: #0a0505;
+  color: var(--text);
+  font-family: 'Noto Serif SC', serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
