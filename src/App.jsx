@@ -17,6 +17,77 @@ const SYSTEM_PROMPT = `你是一位古老的魔鬼，拥有实现任何愿望的
 
 现在，有人向你许下了愿望，请回应。`
 
+function GhostFireCursor() {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    let animId
+    let mouseX = -100, mouseY = -100
+    let trails = []
+
+    function resize() {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const handleMouseMove = (e) => {
+      mouseX = e.clientX
+      mouseY = e.clientY
+      for (let i = 0; i < 2; i++) {
+        trails.push({
+          x: mouseX + (Math.random() - 0.5) * 8,
+          y: mouseY + (Math.random() - 0.5) * 8,
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: -(Math.random() * 2 + 0.5),
+          size: Math.random() * 4 + 2,
+          life: 1,
+          decay: Math.random() * 0.02 + 0.015,
+          hue: Math.random() > 0.6 ? 0 : 120,
+        })
+      }
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      trails = trails.filter(t => t.life > 0)
+      trails.forEach(t => {
+        t.x += t.vx + Math.sin(t.life * 10) * 0.5
+        t.y += t.vy
+        t.life -= t.decay
+        t.size *= 0.98
+        const alpha = t.life * 0.6
+        const r = t.hue === 0 ? 180 : 50
+        const g = t.hue === 0 ? 40 : 120
+        const b = t.hue === 0 ? 40 : 50
+        ctx.globalAlpha = alpha
+        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`
+        ctx.shadowColor = `rgba(${r}, ${g}, ${b}, 0.8)`
+        ctx.shadowBlur = 15
+        ctx.beginPath()
+        ctx.arc(t.x, t.y, t.size, 0, Math.PI * 2)
+        ctx.fill()
+      })
+      ctx.globalAlpha = 1
+      ctx.shadowBlur = 0
+      animId = requestAnimationFrame(animate)
+    }
+    animate()
+
+    return () => {
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', resize)
+      window.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [])
+
+  return <canvas ref={canvasRef} className="ghostfire-canvas" />
+}
+
 function ParticleCanvas() {
   const canvasRef = useRef(null)
 
@@ -162,6 +233,8 @@ function App() {
   const [phase, setPhase] = useState('idle') // idle, summoning, result
   const [showInput, setShowInput] = useState(false)
   const [titleVisible, setTitleVisible] = useState(false)
+  const [shaking, setShaking] = useState(false)
+  const [bloodPulse, setBloodPulse] = useState(false)
 
   useEffect(() => {
     setTimeout(() => setTitleVisible(true), 300)
@@ -173,6 +246,8 @@ function App() {
     setLoading(true)
     setPhase('summoning')
     setResult('')
+    setShaking(true)
+    setTimeout(() => setShaking(false), 600)
 
     try {
       const response = await fetch('https://api.deepseek.com/chat/completions', {
@@ -199,6 +274,12 @@ function App() {
         setResult(content)
         setPhase('result')
         setLoading(false)
+        if (content.includes('代价：')) {
+          setTimeout(() => {
+            setBloodPulse(true)
+            setTimeout(() => setBloodPulse(false), 800)
+          }, content.indexOf('代价：') * 30 + 500)
+        }
       }, 2000)
     } catch (err) {
       setTimeout(() => {
@@ -223,7 +304,7 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className={`app${shaking ? ' screen-shake' : ''}`}>
       <svg className="svg-filters" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="torn-edge">
@@ -241,8 +322,13 @@ function App() {
       </svg>
 
       <ParticleCanvas />
+      <GhostFireCursor />
 
       <div className="lightning-overlay" />
+
+      {phase === 'summoning' && <div className="fog-overlay" />}
+
+      {bloodPulse && <div className="blood-pulse-overlay" />}
 
       <div className="content">
         <header className={`title-area ${titleVisible ? 'visible' : ''}`}>
@@ -261,7 +347,7 @@ function App() {
 
         {showInput && phase === 'idle' && (
           <div className="input-area enter-animation">
-            <div className="parchment-frame">
+            <div className="parchment-frame candlelight">
               <div className="ornament top-ornament">⚜ ⚜ ⚜</div>
               <textarea
                 className="wish-input"
@@ -290,7 +376,7 @@ function App() {
 
         {phase === 'result' && (
           <div className="result-area enter-animation">
-            <div className="result-scroll">
+            <div className="result-scroll candlelight">
               <TypewriterText text={result} />
             </div>
             <button className="seal-button reset-button" onClick={handleReset}>
