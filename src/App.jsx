@@ -541,25 +541,65 @@ function App() {
     setShaking(true)
     setTimeout(() => setShaking(false), 600)
 
-    try {
-      const response = await fetch('https://api.deepseek.com/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_DEEPSEEK_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: 'deepseek-chat',
-          messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: `我许下愿望：${wish}` },
-          ],
-          temperature: 0.9,
-          max_tokens: 600,
-        }),
-      })
+    const payload = {
+      model: 'deepseek-chat',
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: `我许下愿望：${wish}` },
+      ],
+      temperature: 0.9,
+      max_tokens: 600,
+    }
 
-      const data = await response.json()
+    const devKey = import.meta.env.DEV && import.meta.env.VITE_DEEPSEEK_API_KEY
+    if (!devKey && import.meta.env.DEV) {
+      setTimeout(() => {
+        setResult('迷雾阻断了道路……请在本地为 `.env` 设置 VITE_DEEPSEEK_API_KEY，或使用 `vercel dev` 并配置 DEEPSEEK_API_KEY 后再来召唤。')
+        setPhase('result')
+        setLoading(false)
+      }, 2000)
+      return
+    }
+
+    try {
+      let response
+      if (devKey) {
+        response = await fetch('https://api.deepseek.com/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_DEEPSEEK_API_KEY}`,
+          },
+          body: JSON.stringify(payload),
+        })
+      } else {
+        response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      }
+
+      let data
+      try {
+        data = await response.json()
+      } catch {
+        data = {}
+      }
+      if (!response.ok) {
+        const errMsg = data.error?.message || data.error || String(response.status)
+        const human =
+          response.status === 503 && String(errMsg).includes('not configured')
+            ? '此域的契约之坛尚无人点亮——部署者需设置 DEEPSEEK_API_KEY 方能召唤魔鬼。'
+            : `低语在边界溃散了……（${errMsg}）`
+        setTimeout(() => {
+          setResult(human)
+          setPhase('result')
+          setLoading(false)
+        }, 2000)
+        return
+      }
+
       const content = data.choices?.[0]?.message?.content || '魔鬼沉默了……似乎你的愿望太过可怕，连魔鬼都不敢应答。'
 
       setTimeout(() => {
